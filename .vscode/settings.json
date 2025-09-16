@@ -1,0 +1,21 @@
+{
+  // ✅ Format with Prettier (includes Tailwind sorting via prettier-plugin-tailwindcss)
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+
+  // ✅ ESLint auto-fix on save (imports + unused cleanup)
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "always"
+  },
+
+  // ✅ Ensure ESLint runs on these file types
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
+
+  // ✅ Tell VS Code to use project ESLint instead of global
+  "eslint.workingDirectories": [{ "mode": "auto" }]
+}
