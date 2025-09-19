@@ -3,6 +3,7 @@ import { integer, pgEnum, pgTable, text, timestamp, varchar } from 'drizzle-orm/
 
 export const userRole = pgEnum('user_role', ['job_seeker', 'employer', 'admin']);
 export const jobStatus = pgEnum('job_status', ['active', 'closed', 'draft']);
+export const jobType = pgEnum('job_type', ['full_time', 'part_time', 'gig', 'any']);
 export const users = pgTable('users', {
   id: varchar('id', { length: 255 }).primaryKey(),
   name: varchar('name', { length: 255 }).notNull(),
@@ -20,6 +21,7 @@ export const jobs = pgTable('jobs', {
   salaryMin: integer('salary_min'),
   salaryMax: integer('salary_max'),
   status: jobStatus('status').default('draft').notNull(),
+  type: jobType('type').default('any').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull()
 });

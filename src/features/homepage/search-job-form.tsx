@@ -12,7 +12,7 @@ export default function SearchJobForm() {
 
   return (
     <Form {...form}>
-      <form className="space-y-4 pt-4 mx-4">
+      <form className="space-y-4 pt-4 ">
         <FormField
           name="job"
           control={form.control}

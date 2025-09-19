@@ -1,0 +1,1 @@
+CREATE TYPE "public"."job_type" AS ENUM('full_time', 'part_time', 'gig', 'any');
