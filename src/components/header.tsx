@@ -17,13 +17,6 @@ export default function Header() {
           />
         </Link>
       </div>
-      <nav className="mr-auto ml-4">
-        <ul>
-          <li>
-            <Link href="/">Home</Link>
-          </li>
-        </ul>
-      </nav>
 
       <div className="flex gap-x-2">
         <Button

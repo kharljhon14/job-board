@@ -1,7 +1,9 @@
+import SearchJobForm from '@/features/homepage/search-job-form';
+
 export default async function Home() {
   return (
-    <div>
-      <h1 className="text-red-500">Job Board</h1>
+    <div className="container mx-auto">
+      <SearchJobForm />
     </div>
   );
 }
