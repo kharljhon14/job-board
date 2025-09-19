@@ -1,5 +1,4 @@
 import { pgEnum, pgTable, timestamp, varchar } from 'drizzle-orm/pg-core';
-import { createInsertSchema } from 'drizzle-zod';
 
 export const userRole = pgEnum('user_role', ['job_seeker', 'employer', 'admin']);
 
@@ -12,4 +11,4 @@ export const users = pgTable('users', {
   updatedAt: timestamp('updated_at').defaultNow().notNull()
 });
 
-export const insertUserSchema = createInsertSchema(users);
+export const companies = pgTable('companies', {});

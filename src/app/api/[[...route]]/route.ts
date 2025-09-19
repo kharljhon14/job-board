@@ -4,6 +4,7 @@ import { handle } from 'hono/vercel';
 
 import health from './health';
 import users from './users';
+import webhooks from './webhooks';
 
 export const runtime = 'edge';
 
@@ -17,7 +18,7 @@ app.onError((err, c) => {
 });
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars, unused-imports/no-unused-vars
-const routes = app.route('/health', health).route('/users', users);
+const routes = app.route('/health', health).route('/users', users).route('/webhooks', webhooks);
 
 export const GET = handle(app);
 export const POST = handle(app);
