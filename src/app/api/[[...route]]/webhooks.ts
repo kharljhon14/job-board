@@ -2,6 +2,9 @@
 import { Hono } from 'hono';
 import { Webhook } from 'svix';
 
+import { db } from '@/db/drizzle';
+import { users } from '@/db/schema';
+
 const app = new Hono().post('/', async (c) => {
   try {
     const payload = await c.req.text();
@@ -28,11 +31,15 @@ const app = new Hono().post('/', async (c) => {
       return c.text('Error verifying webhook', 400);
     }
 
-    // 4. Handle event
-    const { id } = evt.data;
+    const { id, email_addresses, first_name, last_name } = evt.data;
     const eventType = evt.type;
-    console.log(`Received webhook with ID ${id} and type ${eventType}`);
-    console.log('Payload:', evt.data);
+    if (eventType === 'user.created') {
+      await db.insert(users).values({
+        id: id,
+        email: email_addresses[0].email_address,
+        name: `${first_name} ${last_name}`
+      });
+    }
 
     return c.text('Webhook received', 200);
   } catch (err) {
