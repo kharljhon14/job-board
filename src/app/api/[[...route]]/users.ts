@@ -6,7 +6,7 @@ import { z } from 'zod/v4';
 
 import { db } from '@/db/drizzle';
 import { users } from '@/db/schema';
-import { mapZodError } from '@/lib/utils';
+import { formatZodError } from '@/lib/utils';
 
 const app = new Hono()
   .get('/', clerkMiddleware(), async (c) => {
@@ -55,7 +55,7 @@ const app = new Hono()
       }),
       (result, c) => {
         if (!result.success) {
-          return c.json({ error: mapZodError(result.error) }, 400);
+          return c.json({ error: formatZodError(result.error) }, 400);
         }
       }
     ),

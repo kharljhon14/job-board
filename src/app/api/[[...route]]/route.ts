@@ -3,6 +3,7 @@ import { HTTPException } from 'hono/http-exception';
 import { handle } from 'hono/vercel';
 
 import health from './health';
+import jobs from './jobs';
 import users from './users';
 import webhooks from './webhooks';
 
@@ -18,7 +19,11 @@ app.onError((err, c) => {
 });
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars, unused-imports/no-unused-vars
-const routes = app.route('/health', health).route('/users', users).route('/webhooks', webhooks);
+const routes = app
+  .route('/health', health)
+  .route('/users', users)
+  .route('/jobs', jobs)
+  .route('/webhooks', webhooks);
 
 export const GET = handle(app);
 export const POST = handle(app);

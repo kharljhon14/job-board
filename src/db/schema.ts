@@ -1,6 +1,6 @@
 import { relations } from 'drizzle-orm';
 import { integer, pgEnum, pgTable, text, timestamp, varchar } from 'drizzle-orm/pg-core';
-
+import { createInsertSchema } from 'drizzle-zod';
 export const userRole = pgEnum('user_role', ['job_seeker', 'employer', 'admin']);
 export const jobStatus = pgEnum('job_status', ['active', 'closed', 'draft']);
 export const jobType = pgEnum('job_type', ['full_time', 'part_time', 'gig', 'any']);
@@ -32,3 +32,5 @@ export const jobsRelations = relations(jobs, ({ one }) => ({
     references: [users.id]
   })
 }));
+
+export const insertJobSchema = createInsertSchema(jobs);
