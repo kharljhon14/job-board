@@ -5,7 +5,7 @@ import { Webhook } from 'svix';
 import { db } from '@/db/drizzle';
 import { users } from '@/db/schema';
 
-const app = new Hono().post('/', async (c) => {
+const app = new Hono().post(async (c) => {
   try {
     const payload = await c.req.text();
 
@@ -33,6 +33,7 @@ const app = new Hono().post('/', async (c) => {
 
     const { id, email_addresses, first_name, last_name } = evt.data;
     const eventType = evt.type;
+    console.log(eventType, evt.data);
     if (eventType === 'user.created') {
       await db.insert(users).values({
         id: id,
