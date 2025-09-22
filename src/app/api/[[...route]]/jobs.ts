@@ -4,6 +4,7 @@ import { Hono } from 'hono';
 
 import { db } from '@/db/drizzle';
 import { insertJobSchema, jobs } from '@/db/schema';
+import { formatZodError } from '@/lib/utils';
 
 const app = new Hono()
   .get(async (c) => {
@@ -20,7 +21,12 @@ const app = new Hono()
     clerkMiddleware(),
     zValidator(
       'json',
-      insertJobSchema.omit({ createdAt: true, updatedAt: true, userId: true, id: true })
+      insertJobSchema.omit({ createdAt: true, updatedAt: true, userId: true, id: true }),
+      (result, c) => {
+        if (!result.success) {
+          return c.json({ error: formatZodError(result.error) }, 400);
+        }
+      }
     ),
     async (c) => {
       const auth = getAuth(c);
@@ -30,7 +36,6 @@ const app = new Hono()
       }
 
       const values = c.req.valid('json');
-
       return c.json({ data: values });
     }
   );

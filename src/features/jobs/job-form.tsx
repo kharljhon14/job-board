@@ -2,11 +2,23 @@
 
 import 'easymde/dist/easymde.min.css';
 
-import { useForm } from 'react-hook-form';
-import SimpleMdeReact from 'react-simplemde-editor';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { SubmitHandler, useForm } from 'react-hook-form';
+const SimpleMdeReact = dynamic(() => import('react-simplemde-editor'), {
+  ssr: false
+});
+import dynamic from 'next/dynamic';
+import z from 'zod/v4';
 
 import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
+} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import {
   Select,
@@ -16,20 +28,70 @@ import {
   SelectValue
 } from '@/components/ui/select';
 
+import { useCreateJob } from './api/use-create-job';
+
+const newJobFormSchema = z.object({
+  title: z.string().min(1, 'Title is required').max(255, 'title must not exceed 255 characters'),
+  description: z.string().min(1, 'Description is required'),
+  type: z.enum(['full_time', 'part_time', 'gig', 'any']).default('any'),
+  status: z.enum(['draft', 'active', 'closed']).default('draft'),
+  salary: z.string().max(255, 'title must not exceed 255 characters')
+});
+
+type NewJobFormSchema = z.infer<typeof newJobFormSchema>;
+
 export default function JobForm() {
-  const form = useForm();
+  const form = useForm({
+    resolver: zodResolver(newJobFormSchema),
+    defaultValues: {
+      title: '',
+      description: '',
+      type: 'any',
+      status: 'draft',
+      salary: ''
+    }
+  });
+
+  const createMutation = useCreateJob();
+  const onSubmit: SubmitHandler<NewJobFormSchema> = (data) => {
+    createMutation.mutate(data);
+  };
 
   return (
     <Form {...form}>
-      <form className="mt-10 space-y-6">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        autoComplete="off"
+        className="mt-10 space-y-6"
+      >
         <FormField
           name="title"
-          render={() => (
+          render={({ field }) => (
             <FormItem>
               <FormLabel>Job Title</FormLabel>
               <FormControl>
-                <Input placeholder="Software Engineer" />
+                <Input
+                  placeholder="Software Engineer"
+                  {...field}
+                />
               </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          name="salary"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Salary</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="$5.00 - $10.00 per hour"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -57,6 +119,7 @@ export default function JobForm() {
                     </SelectContent>
                   </Select>
                 </div>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -79,41 +142,11 @@ export default function JobForm() {
                   <SelectContent>
                     <SelectItem value="full_time">Full-time</SelectItem>
                     <SelectItem value="part_time">Part-time</SelectItem>
-                    <SelectItem value="git">Gig</SelectItem>
+                    <SelectItem value="gig">Gig</SelectItem>
                     <SelectItem value="any">Any</SelectItem>
                   </SelectContent>
                 </Select>
-              </FormItem>
-            )}
-          />
-        </div>
-
-        <div className="flex gap-6 flex-wrap">
-          <FormField
-            name="salaryMin"
-            render={() => (
-              <FormItem>
-                <FormLabel>Minimum Salary</FormLabel>
-                <FormControl>
-                  <Input
-                    className="w-[210px]"
-                    placeholder="5"
-                  />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-          <FormField
-            name="salaryMax"
-            render={() => (
-              <FormItem>
-                <FormLabel>Maximum Salary</FormLabel>
-                <FormControl>
-                  <Input
-                    className="w-[210px]"
-                    placeholder="10"
-                  />
-                </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -130,6 +163,7 @@ export default function JobForm() {
                   onChange={field.onChange}
                 />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
