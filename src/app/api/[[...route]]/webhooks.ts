@@ -33,7 +33,7 @@ const app = new Hono().post(async (c) => {
 
     const { id, email_addresses, first_name, last_name } = evt.data;
     const eventType = evt.type;
-    console.log(eventType, evt.data);
+
     if (eventType === 'user.created') {
       await db.insert(users).values({
         id: id,

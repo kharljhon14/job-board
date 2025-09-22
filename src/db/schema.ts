@@ -37,5 +37,5 @@ export const insertJobSchema = createInsertSchema(jobs, {
   title: (schema) =>
     schema.min(1, 'title is required').max(255, 'title must not exceed 255 characters'),
   description: (schema) => schema.min(1, 'description is required'),
-  salary: (schema) => schema.max(255, 'title must not exceed 255 characters')
+  salary: (schema) => schema.max(255, 'salary must not exceed 255 characters')
 });
