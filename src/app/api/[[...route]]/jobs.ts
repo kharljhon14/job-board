@@ -1,7 +1,7 @@
 import { clerkMiddleware, getAuth } from '@hono/clerk-auth';
 import { zValidator } from '@hono/zod-validator';
 import { createId } from '@paralleldrive/cuid2';
-import { count, eq } from 'drizzle-orm';
+import { and, count, eq, inArray, sql } from 'drizzle-orm';
 import { Hono } from 'hono';
 import z from 'zod/v4';
 
@@ -120,6 +120,56 @@ const app = new Hono()
         .insert(jobs)
         .values({ id: createId(), userId: auth.userId, ...values })
         .returning();
+
+      return c.json({ data: data });
+    }
+  )
+  .patch(
+    '/:id',
+    clerkMiddleware(),
+    zValidator(
+      'param',
+      z.object({
+        id: z.string('id is required')
+      })
+    ),
+    zValidator(
+      'json',
+      insertJobSchema.omit({ createdAt: true, updatedAt: true, userId: true, id: true }),
+      (result, c) => {
+        if (!result.success) {
+          return c.json({ error: formatZodError(result.error) }, 400);
+        }
+      }
+    ),
+    async (c) => {
+      const auth = getAuth(c);
+
+      if (!auth?.userId) {
+        return c.json({ error: 'unauthorized' }, 401);
+      }
+
+      const { id } = c.req.valid('param');
+      const values = c.req.valid('json');
+
+      const jobToUpdate = db.$with('job_to_update').as(
+        db
+          .select({ id: jobs.id })
+          .from(jobs)
+          .innerJoin(users, eq(jobs.userId, users.id))
+          .where(and(eq(jobs.id, id), eq(jobs.userId, auth.userId)))
+      );
+
+      const [data] = await db
+        .with(jobToUpdate)
+        .update(jobs)
+        .set(values)
+        .where(inArray(jobs.id, sql`(SELECT id FROM ${jobToUpdate})`))
+        .returning();
+
+      if (!data) {
+        return c.json({ error: 'job not found' }, 404);
+      }
 
       return c.json({ data: data });
     }
