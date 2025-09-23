@@ -11,6 +11,7 @@ import { formatZodError, generateMetadata } from '@/lib/utils';
 
 const app = new Hono()
   .get(
+    '/',
     zValidator(
       'query',
       z.object({
