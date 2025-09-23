@@ -60,6 +60,41 @@ const app = new Hono()
       return c.json({ data, metadata });
     }
   )
+  .get(
+    '/:id',
+    zValidator(
+      'param',
+      z.object({
+        id: z.string('id is required')
+      })
+    ),
+    async (c) => {
+      const { id } = c.req.valid('param');
+
+      const [data] = await db
+        .select({
+          id: jobs.id,
+          userId: jobs.userId,
+          userName: users.name,
+          title: jobs.title,
+          description: jobs.description,
+          salary: jobs.salary,
+          type: jobs.type,
+          status: jobs.status,
+          createdAt: jobs.createdAt,
+          updatedAt: jobs.updatedAt
+        })
+        .from(jobs)
+        .innerJoin(users, eq(jobs.userId, users.id))
+        .where(eq(jobs.id, id));
+
+      if (!data) {
+        return c.json({ error: 'job not found' }, 404);
+      }
+
+      return c.json({ data });
+    }
+  )
   .post(
     '/',
     clerkMiddleware(),
