@@ -1,9 +1,7 @@
-import { CircleDollarSign } from 'lucide-react';
+import { format } from 'date-fns';
 import Link from 'next/link';
 import Markdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
 
-import { Badge } from '@/components/ui/badge';
 import {
   Card,
   CardContent,
@@ -13,6 +11,9 @@ import {
   CardTitle
 } from '@/components/ui/card';
 import { Job } from '@/types/job';
+
+import JobSalary from './job-salary';
+import JobTypeBadge from './job-type-badge';
 
 interface Props {
   job: Job;
@@ -25,21 +26,18 @@ export default function JobCard({ job }: Props) {
         <CardHeader>
           <CardTitle className="flex justify-between">
             <p>{job.title}</p>
-            <Badge>{job.type}</Badge>
+            <JobTypeBadge jobType={job.type} />
           </CardTitle>
           {job.salary && (
             <CardDescription>
-              <div className="flex gap-x-2 items-center">
-                <CircleDollarSign />
-                <p>{job.salary}</p>
-              </div>
+              <JobSalary salary={job.salary} />
             </CardDescription>
           )}
         </CardHeader>
         <CardContent className=" prose line-clamp-4">
-          <Markdown remarkPlugins={[remarkGfm]}>{job.description}</Markdown>
+          <Markdown>{job.description}</Markdown>
         </CardContent>
-        <CardFooter>{job.createdAt}</CardFooter>
+        <CardFooter>Date: {format(new Date(job.createdAt), 'MMM dd, yyyy')}</CardFooter>
       </Card>
     </Link>
   );

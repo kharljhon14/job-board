@@ -5,8 +5,11 @@ export interface Job {
   title: string;
   description: string;
   salary: string | null;
-  type: string;
-  status: string;
+  type: JobType;
+  status: JobStatus;
   createdAt: string;
   updatedAt: string;
 }
+
+export type JobType = 'full_time' | 'part_time' | 'gig' | 'any';
+export type JobStatus = 'active' | 'closed' | 'draft';

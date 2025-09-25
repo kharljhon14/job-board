@@ -17,14 +17,6 @@ export function formatZodError(error: $ZodError<unknown> | ZodError<any>) {
   }, {});
 }
 
-export function convertAmountToMiliunits(amount: number) {
-  return Math.round(amount) * 1000;
-}
-
-export function convertAmountFromMiliunits(amount: number) {
-  return amount / 1000;
-}
-
 export function generateMetadata(totalItems: number, page: number, pageSize: number) {
   return {
     currentPage: page,
