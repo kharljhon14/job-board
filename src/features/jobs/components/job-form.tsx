@@ -28,7 +28,7 @@ import {
   SelectValue
 } from '@/components/ui/select';
 
-import { useCreateJob } from './api/use-create-job';
+import { useCreateJob } from '../api/use-create-job';
 
 const newJobFormSchema = z.object({
   title: z.string().min(1, 'Title is required').max(255, 'title must not exceed 255 characters'),
