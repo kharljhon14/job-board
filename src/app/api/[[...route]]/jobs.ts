@@ -15,6 +15,7 @@ const app = new Hono()
     zValidator(
       'query',
       z.object({
+        userId: z.string().optional(),
         page: z
           .string()
           .regex(RegExp(/^\d+$/), 'page must be a valid number')
@@ -39,6 +40,7 @@ const app = new Hono()
 
       const totalItems = await db.select({ count: count() }).from(jobs);
 
+      // TODO Add a order by
       const data = await db
         .select({
           id: jobs.id,
@@ -53,9 +55,10 @@ const app = new Hono()
           updatedAt: jobs.updatedAt
         })
         .from(jobs)
+        .innerJoin(users, eq(jobs.userId, users.id))
+        .where(query.userId ? and(eq(jobs.userId, query.userId)) : undefined)
         .limit(query.pageSize)
-        .offset((query.page - 1) * query.pageSize)
-        .innerJoin(users, eq(jobs.userId, users.id));
+        .offset((query.page - 1) * query.pageSize);
 
       const metadata = generateMetadata(totalItems[0].count, query.page, query.pageSize);
       return c.json({ data, metadata });
