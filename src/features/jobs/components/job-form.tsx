@@ -40,16 +40,14 @@ const newJobFormSchema = z.object({
 
 type NewJobFormSchema = z.infer<typeof newJobFormSchema>;
 
-export default function JobForm() {
+interface Props {
+  defaultValues?: NewJobFormSchema;
+}
+
+export default function JobForm({ defaultValues }: Props) {
   const form = useForm({
     resolver: zodResolver(newJobFormSchema),
-    defaultValues: {
-      title: '',
-      description: '',
-      type: 'any',
-      status: 'draft',
-      salary: ''
-    }
+    defaultValues
   });
 
   const createMutation = useCreateJob();

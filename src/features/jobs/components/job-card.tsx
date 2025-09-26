@@ -10,6 +10,7 @@ import {
   CardHeader,
   CardTitle
 } from '@/components/ui/card';
+import paths from '@/lib/path';
 import { Job } from '@/types/job';
 
 import JobSalary from './job-salary';
@@ -21,7 +22,7 @@ interface Props {
 
 export default function JobCard({ job }: Props) {
   return (
-    <Link href="/">
+    <Link href={paths.viewJobPath(job.id)}>
       <Card className=" hover:shadow-md transition-all duration-100">
         <CardHeader>
           <CardTitle className="flex justify-between">

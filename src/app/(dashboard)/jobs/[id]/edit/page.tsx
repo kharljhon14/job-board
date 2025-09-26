@@ -1,9 +1,16 @@
+'use client';
+
+import { useParams } from 'next/navigation';
+
+import { useGetJob } from '@/features/jobs/api/use-get-job';
 import JobForm from '@/features/jobs/components/job-form';
 
 export default function EditJobPage() {
+  const { id } = useParams();
+  const jobQuery = useGetJob(id?.toString());
+
   return (
     <div>
-      <h1>Update</h1>
       <JobForm />
     </div>
   );
