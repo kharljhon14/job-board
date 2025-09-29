@@ -1,7 +1,7 @@
 'use client';
 
 import { useAuth } from '@clerk/nextjs';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 
 import { useGetJob } from '@/features/jobs/api/use-get-job';
 import { useUpdateJob } from '@/features/jobs/api/use-update-job';
@@ -10,6 +10,7 @@ import JobForm, { NewJobFormSchema } from '@/features/jobs/components/job-form';
 export default function EditJobPage() {
   const { id } = useParams();
   const jobQuery = useGetJob(id?.toString());
+  const router = useRouter();
 
   const auth = useAuth();
 

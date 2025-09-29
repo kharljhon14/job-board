@@ -6,6 +6,7 @@ import { Geist, Geist_Mono } from 'next/font/google';
 
 import Footer from '@/components/footer';
 import Header from '@/components/header';
+import { Toaster } from '@/components/ui/sonner';
 import QueryProvider from '@/providers/query-provider';
 
 const geistSans = Geist({
@@ -35,6 +36,7 @@ export default function RootLayout({
           <QueryProvider>
             <Header />
             <main className="my-10 min-h-screen">{children}</main>
+            <Toaster />
             <Footer />
           </QueryProvider>
         </body>

@@ -1,7 +1,7 @@
 import { clerkMiddleware, getAuth } from '@hono/clerk-auth';
 import { zValidator } from '@hono/zod-validator';
 import { createId } from '@paralleldrive/cuid2';
-import { and, count, eq, inArray, sql } from 'drizzle-orm';
+import { and, count, desc, eq, inArray, sql } from 'drizzle-orm';
 import { Hono } from 'hono';
 import z from 'zod/v4';
 
@@ -27,7 +27,8 @@ const app = new Hono()
           .regex(RegExp(/^\d+$/), 'page size must be a valid number')
           .optional()
           .default('10')
-          .transform(Number)
+          .transform(Number),
+        status: z.enum(['active', 'closed', 'draft']).default('active')
       }),
       (result, c) => {
         if (!result.success) {
@@ -56,7 +57,12 @@ const app = new Hono()
         })
         .from(jobs)
         .innerJoin(users, eq(jobs.userId, users.id))
-        .where(query.userId ? and(eq(jobs.userId, query.userId)) : undefined)
+        .where(
+          query.userId
+            ? and(eq(jobs.userId, query.userId), eq(jobs.status, query.status))
+            : undefined
+        )
+        .orderBy(desc(jobs.createdAt))
         .limit(query.pageSize)
         .offset((query.page - 1) * query.pageSize);
 
@@ -115,7 +121,7 @@ const app = new Hono()
       const auth = getAuth(c);
 
       if (!auth?.userId) {
-        return c.json({ error: 'unauthorized' }, 401);
+        return c.json({ error: 'unauthorized', success: false }, 401);
       }
 
       const values = c.req.valid('json');
@@ -125,7 +131,7 @@ const app = new Hono()
         .values({ id: createId(), userId: auth.userId, ...values })
         .returning();
 
-      return c.json({ data: data });
+      return c.json({ data: data, success: true });
     }
   )
   .patch(

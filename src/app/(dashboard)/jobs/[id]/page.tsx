@@ -39,18 +39,18 @@ export default function JobPage() {
       <div className="space-y-6">
         <div className="bg-slate-700 relative text-white rounded-xl flex items-center justify-center flex-col p-6 h-[14rem]">
           {jobQuery.data.data.userId === auth.userId && (
-            <Button
-              size="sm"
-              variant="ghost"
-              className="absolute right-5 top-5"
+            <Link
+              href={paths.editJobPath(jobQuery.data.data.id)}
+              className=""
             >
-              <Link
-                href={paths.editJobPath(jobQuery.data.data.id)}
-                className="flex gap-x-2 items-center"
+              <Button
+                size="sm"
+                variant="ghost"
+                className="absolute right-5 top-5"
               >
                 <SquarePen /> Edit
-              </Link>
-            </Button>
+              </Button>
+            </Link>
           )}
           <h1 className="font-semibold">{jobQuery.data.data.title}</h1>
           <div className="mt-4 flex items-center gap-2">
