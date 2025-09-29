@@ -28,8 +28,6 @@ import {
   SelectValue
 } from '@/components/ui/select';
 
-import { useCreateJob } from '../api/use-create-job';
-
 const newJobFormSchema = z.object({
   title: z.string().min(1, 'Title is required').max(255, 'title must not exceed 255 characters'),
   description: z.string().min(1, 'Description is required'),
@@ -38,27 +36,28 @@ const newJobFormSchema = z.object({
   salary: z.string().max(255, 'title must not exceed 255 characters')
 });
 
-type NewJobFormSchema = z.infer<typeof newJobFormSchema>;
+export type NewJobFormSchema = z.infer<typeof newJobFormSchema>;
 
 interface Props {
+  id?: string;
+  onSubmit: (values: NewJobFormSchema) => void;
   defaultValues?: NewJobFormSchema;
 }
 
-export default function JobForm({ defaultValues }: Props) {
+export default function JobForm({ id, onSubmit, defaultValues }: Props) {
   const form = useForm({
     resolver: zodResolver(newJobFormSchema),
     defaultValues
   });
 
-  const createMutation = useCreateJob();
-  const onSubmit: SubmitHandler<NewJobFormSchema> = (data) => {
-    createMutation.mutate(data);
+  const handleOnSubmit: SubmitHandler<NewJobFormSchema> = (data) => {
+    onSubmit(data);
   };
 
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={form.handleSubmit(handleOnSubmit)}
         autoComplete="off"
         className="mt-10 space-y-6"
       >
@@ -166,7 +165,7 @@ export default function JobForm({ defaultValues }: Props) {
           )}
         />
 
-        <Button>Create Job</Button>
+        <Button> {id ? 'Update Job' : 'Create Job'}</Button>
       </form>
     </Form>
   );

@@ -1,7 +1,16 @@
 'use client';
 
+import { useAuth } from '@clerk/nextjs';
 import { format } from 'date-fns';
-import { Bookmark, BriefcaseBusiness, Calendar, CircleDollarSign, Contact } from 'lucide-react';
+import {
+  Bookmark,
+  BriefcaseBusiness,
+  Calendar,
+  CircleDollarSign,
+  Contact,
+  SquarePen
+} from 'lucide-react';
+import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import Markdown from 'react-markdown';
 
@@ -9,9 +18,12 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { useGetJob } from '@/features/jobs/api/use-get-job';
 import JobTypeBadge from '@/features/jobs/components/job-type-badge';
+import paths from '@/lib/path';
 
 export default function JobPage() {
   const { id } = useParams();
+  const auth = useAuth();
+
   const jobQuery = useGetJob(id?.toString());
 
   if (jobQuery.isLoading) {
@@ -25,7 +37,21 @@ export default function JobPage() {
   if (jobQuery.isSuccess) {
     return (
       <div className="space-y-6">
-        <div className="bg-neutral-600 text-white rounded-xl flex items-center justify-center flex-col p-6">
+        <div className="bg-slate-700 relative text-white rounded-xl flex items-center justify-center flex-col p-6 h-[14rem]">
+          {jobQuery.data.data.userId === auth.userId && (
+            <Button
+              size="sm"
+              variant="ghost"
+              className="absolute right-5 top-5"
+            >
+              <Link
+                href={paths.editJobPath(jobQuery.data.data.id)}
+                className="flex gap-x-2 items-center"
+              >
+                <SquarePen /> Edit
+              </Link>
+            </Button>
+          )}
           <h1 className="font-semibold">{jobQuery.data.data.title}</h1>
           <div className="mt-4 flex items-center gap-2">
             <Button
