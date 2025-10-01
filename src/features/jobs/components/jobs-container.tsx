@@ -2,14 +2,17 @@
 
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Job } from '@/types/job';
 
-import { useGetJobs } from '../api/use-get-jobs';
 import JobCard from './job-card';
 
-export default function JobsContainer() {
-  const jobsQuery = useGetJobs();
+interface Props {
+  jobs: Job[];
+  isLoading: boolean;
+}
 
-  if (jobsQuery.isLoading) {
+export default function JobsContainer({ jobs, isLoading }: Props) {
+  if (isLoading) {
     return (
       <div className="grid gap-4">
         <Card>
@@ -69,7 +72,7 @@ export default function JobsContainer() {
 
   return (
     <div className="grid gap-4">
-      {jobsQuery.data?.data.map((job) => (
+      {jobs.map((job) => (
         <JobCard
           key={job.id}
           job={job}

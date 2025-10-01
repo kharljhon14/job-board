@@ -52,7 +52,7 @@ export default function JobPage() {
               </Button>
             </Link>
           )}
-          <h1 className="font-semibold">{jobQuery.data.data.title}</h1>
+          <h1 className="font-semibold text-xl">{jobQuery.data.data.title}</h1>
           <div className="mt-4 flex items-center gap-2">
             <Button
               size="lg"
@@ -67,7 +67,7 @@ export default function JobPage() {
           </div>
         </div>
 
-        <div className="p-6 rounded-xl border shadow space-y-3">
+        <div className="p-4 rounded-xl border shadow space-y-3">
           <div className="flex gap-4 items-center">
             <BriefcaseBusiness size={30} />
             <div>
@@ -100,7 +100,7 @@ export default function JobPage() {
           </div>
         </div>
 
-        <div className="p-6 rounded-2xl border shadow">
+        <div className="p-4 rounded-2xl border shadow">
           <div>
             <h2 className="uppercase font-semibold text-xl">Job Overview</h2>
           </div>

@@ -7,12 +7,27 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 
-export default function SearchJobForm() {
-  const form = useForm();
+interface Props {
+  handleSearchOnSubmit: (searchValur: string) => void;
+}
+
+export default function SearchJobForm({ handleSearchOnSubmit }: Props) {
+  const form = useForm({
+    defaultValues: {
+      job: ''
+    }
+  });
+
+  const handleOnSubmit = (value: { job: string }) => {
+    handleSearchOnSubmit(value.job);
+  };
 
   return (
     <Form {...form}>
-      <form className="space-y-4 pt-4 ">
+      <form
+        onSubmit={form.handleSubmit(handleOnSubmit)}
+        className="space-y-4 pt-4 "
+      >
         <FormField
           name="job"
           control={form.control}

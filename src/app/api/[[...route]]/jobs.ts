@@ -1,7 +1,7 @@
 import { clerkMiddleware, getAuth } from '@hono/clerk-auth';
 import { zValidator } from '@hono/zod-validator';
 import { createId } from '@paralleldrive/cuid2';
-import { and, count, desc, eq, inArray, sql } from 'drizzle-orm';
+import { and, count, desc, eq, ilike, inArray, sql } from 'drizzle-orm';
 import { Hono } from 'hono';
 import z from 'zod/v4';
 
@@ -16,6 +16,7 @@ const app = new Hono()
       'query',
       z.object({
         userId: z.string().optional(),
+        q: z.string().max(60).optional(),
         page: z
           .string()
           .regex(RegExp(/^\d+$/), 'page must be a valid number')
@@ -39,7 +40,16 @@ const app = new Hono()
     async (c) => {
       const query = c.req.valid('query');
 
-      const totalItems = await db.select({ count: count() }).from(jobs);
+      const totalItems = await db
+        .select({ count: count() })
+        .from(jobs)
+        .where(
+          and(
+            query.userId ? eq(jobs.userId, query.userId) : undefined,
+            eq(jobs.status, query.status),
+            query.q ? ilike(jobs.title, `%${query.q}%`) : undefined
+          )
+        );
 
       // TODO Add a order by
       const data = await db
@@ -58,9 +68,11 @@ const app = new Hono()
         .from(jobs)
         .innerJoin(users, eq(jobs.userId, users.id))
         .where(
-          query.userId
-            ? and(eq(jobs.userId, query.userId), eq(jobs.status, query.status))
-            : undefined
+          and(
+            query.userId ? eq(jobs.userId, query.userId) : undefined,
+            eq(jobs.status, query.status),
+            query.q ? ilike(jobs.title, `%${query.q}%`) : undefined
+          )
         )
         .orderBy(desc(jobs.createdAt))
         .limit(query.pageSize)
