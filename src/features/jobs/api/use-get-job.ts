@@ -5,7 +5,7 @@ import { client } from '@/lib/hono';
 export function useGetJob(id?: string) {
   const query = useQuery({
     enabled: !!id,
-    queryKey: ['jobs', id],
+    queryKey: ['job', { id }],
     queryFn: async () => {
       const response = await client.api.jobs[':id'].$get({
         param: { id: id || '' }

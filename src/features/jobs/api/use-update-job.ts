@@ -21,7 +21,8 @@ export function useUpdateJob(id?: string) {
     },
     onSuccess: () => {
       toast.success('Updated Successfuly');
-      queryClient.invalidateQueries({ queryKey: ['jobs', id] });
+      queryClient.invalidateQueries({ queryKey: ['job', { id }] });
+      queryClient.invalidateQueries({ queryKey: ['jobs'] });
       router.push(paths.viewJobPath(id?.toString() || ''));
     }
   });
