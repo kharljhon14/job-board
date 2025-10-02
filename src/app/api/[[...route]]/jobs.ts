@@ -29,7 +29,7 @@ const app = new Hono()
           .optional()
           .default('10')
           .transform(Number),
-        status: z.enum(['active', 'closed', 'draft']).default('active')
+        status: z.enum(['active', 'closed', 'draft']).optional()
       }),
       (result, c) => {
         if (!result.success) {
@@ -46,7 +46,7 @@ const app = new Hono()
         .where(
           and(
             query.userId ? eq(jobs.userId, query.userId) : undefined,
-            eq(jobs.status, query.status),
+            query.status ? eq(jobs.status, query.status) : undefined,
             query.q ? ilike(jobs.title, `%${query.q}%`) : undefined
           )
         );
@@ -70,7 +70,7 @@ const app = new Hono()
         .where(
           and(
             query.userId ? eq(jobs.userId, query.userId) : undefined,
-            eq(jobs.status, query.status),
+            query.status ? eq(jobs.status, query.status) : undefined,
             query.q ? ilike(jobs.title, `%${query.q}%`) : undefined
           )
         )
