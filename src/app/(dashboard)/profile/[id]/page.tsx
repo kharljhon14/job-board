@@ -1,22 +1,25 @@
 'use client';
 
+import { useAuth } from '@clerk/nextjs';
 import { useState } from 'react';
 
 import SearchJobForm from '@/features/homepage/search-job-form';
 import { useGetJobs } from '@/features/jobs/api/use-get-jobs';
 import JobsContainer from '@/features/jobs/components/jobs-container';
 
-export default function Home() {
+export default function ProfilePage() {
+  const auth = useAuth();
+
   const [searchValue, setSearchValue] = useState('');
 
   const handleSearchOnSubmit = (searchValue: string) => {
     setSearchValue(searchValue);
   };
 
-  const jobsQuery = useGetJobs({ status: 'active', searchParam: searchValue });
+  const jobsQuery = useGetJobs({ searchParam: searchValue, userId: auth.userId ?? '' });
 
   return (
-    <div className="container mx-auto px-4 ">
+    <div className="container mx-auto ">
       <SearchJobForm handleSearchOnSubmit={handleSearchOnSubmit} />
 
       <div className="mt-4">

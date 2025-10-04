@@ -10,6 +10,9 @@ const paths = {
   },
   editJobPath(jobSlug: string) {
     return `/jobs/${jobSlug}/edit`;
+  },
+  viewProfilePath(slug: string) {
+    return `/profile/${slug}`;
   }
 };
 

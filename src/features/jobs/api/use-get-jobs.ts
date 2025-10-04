@@ -3,11 +3,19 @@ import { useQuery } from '@tanstack/react-query';
 import { client } from '@/lib/hono';
 import { JobStatus } from '@/types/job';
 
-export function useGetJobs(status: JobStatus, searchParam?: string) {
+export interface GetJobsParams {
+  status?: JobStatus;
+  searchParam?: string;
+  userId?: string;
+}
+
+export function useGetJobs({ searchParam, status, userId }: GetJobsParams) {
   const query = useQuery({
-    queryKey: ['jobs', { searchParam }],
+    queryKey: ['jobs', { searchParam, status, userId }],
     queryFn: async () => {
-      const response = await client.api.jobs.$get({ query: { q: searchParam, status } });
+      const response = await client.api.jobs.$get({
+        query: { q: searchParam, status, userId: userId }
+      });
 
       if (!response.ok) {
         throw new Error('failed to fetch jobs');
