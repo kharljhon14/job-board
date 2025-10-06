@@ -8,6 +8,7 @@ import Link from 'next/link';
 import paths from '@/lib/path';
 
 import { Button } from './ui/button';
+import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 export default function Header() {
   const auth = useAuth();
 
@@ -45,11 +46,19 @@ export default function Header() {
           >
             <Bell />
           </Button>
-          <Link href={paths.viewProfilePath(auth.userId)}>
-            <Button size="icon">
-              <User />
-            </Button>
-          </Link>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button size="icon">
+                <User />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent asChild>
+              <div className="flex flex-col gap-2 w-[10rem]">
+                <Link href={paths.viewProfilePath(auth.userId)}>Profile</Link>
+                <Link href={paths.viewProfilePath(auth.userId)}>My Jobs</Link>
+              </div>
+            </PopoverContent>
+          </Popover>
         </div>
       )}
     </header>
