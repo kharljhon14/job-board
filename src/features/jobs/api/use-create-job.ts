@@ -24,6 +24,9 @@ export function useCreateJob() {
       queryClient.invalidateQueries({ queryKey: ['jobs'] });
 
       if (data.success) router.push(paths.viewJobPath(data.data[0].id));
+    },
+    onError(error) {
+      console.log(error);
     }
   });
 
