@@ -1,6 +1,6 @@
 'use client';
 
-import { useAuth } from '@clerk/nextjs';
+import { useAuth, useClerk } from '@clerk/nextjs';
 import { Bell, Bookmark, MessageCircleMore, User } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -11,6 +11,7 @@ import { Button } from './ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 export default function Header() {
   const auth = useAuth();
+  const { signOut } = useClerk();
 
   return (
     <header className="p-4 border-b flex items-center justify-between">
@@ -53,9 +54,11 @@ export default function Header() {
               </Button>
             </PopoverTrigger>
             <PopoverContent asChild>
-              <div className="flex flex-col gap-2 w-[10rem]">
+              <div className="flex flex-col gap-3 w-[10rem] items-center justify-center">
                 <Link href={paths.viewProfilePath(auth.userId)}>Profile</Link>
                 <Link href={paths.viewProfilePath(auth.userId)}>My Jobs</Link>
+
+                <Button onClick={() => signOut({ redirectUrl: paths.homePath() })}>Sign out</Button>
               </div>
             </PopoverContent>
           </Popover>
